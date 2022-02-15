@@ -1,7 +1,7 @@
 function middleware(req, res, next) {
     console.log('Hello from middleware');
 
-    console.log(req.params);
+    // console.log(req.params);
 
     if (req.params.catId) {
         next();
