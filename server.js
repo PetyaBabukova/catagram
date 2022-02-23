@@ -1,10 +1,15 @@
 const express = require('express');
 const { engine } = require('express-handlebars'); //това ни връща нещо като мидълуер - хендълбарс, който да ползваме за апликейшъна
 const bodyParser = require('body-parser');
+const createCat = require('./services/createCat');
+const Cat = require('./modules/Cat')
+require('./config/db');
 
 const checkCatIdMiddleware = require('./middlewares/middleware');
 const logger = require('./middlewares/loggerMiddleware');
-const cats = require ('./cats.js') 
+const cats = require('./cats.js');
+
+
 
 const app = express();
 
@@ -24,9 +29,19 @@ app.set('view engine', 'hbs');
 // app.set("views", "./views");
 
 app.get('/', (req, res) => {
-    let name = "Pesho";
 
-    res.render('home', { name });
+    createCat('Namcho', 'Ivailo');
+
+    Cat.find({ name: 'Namcho' })
+        .populate('owner')
+        .then(cat => {
+
+            console.log(cat);
+
+            let name = "Navcho";
+            res.render('home', { name });
+        })
+
 });
 
 //  app.get('/download', (req, res)=>{
@@ -40,7 +55,7 @@ app.get('/', (req, res) => {
 
 
 app.get('/cats', (req, res) => {
-    res.render('cats', {cats: cats.getAll()})
+    res.render('cats', { cats: cats.getAll() })
 });
 
 app.post('/cats', (req, res) => {
